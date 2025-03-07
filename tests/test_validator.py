@@ -1,7 +1,7 @@
 import unittest
 
 from exceptions.exception import InvalidNameLengthException, NullException, InvalidEmailPatternException, \
-    InvalidPasswordLengthException
+    InvalidPasswordLengthException, InvalidCourseCodeException
 from src.validator import Validator
 
 
@@ -72,6 +72,15 @@ class MyValidatorTestCase(unittest.TestCase):
     def test_that_course_title_is_valid(self):
         title = self.validator.validate_course_title("Introduction to English")
         self.assertTrue(title)
+
+    def test_that_course_code_is_not_valid(self):
+        with self.assertRaises(InvalidCourseCodeException):
+            self.validator.validate_course_code(",math123")
+
+    def test_that_course_code_is_valid(self):
+        course = self.validator.validate_course_code("Math123")
+        self.assertTrue(course)
+
 
 
 
