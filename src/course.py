@@ -1,4 +1,4 @@
-from exceptions.exception import InvalidNameLengthException
+from exceptions.exception import InvalidNameLengthException, AlreadyExistException
 from src.validator import Validator
 
 
@@ -32,14 +32,19 @@ class Course:
     def add_student(self, student_name: str):
         try:
             first_name, last_name = student_name.split()
-            self.enrollment_students.append(student_name)
-        except InvalidNameLengthException:
-            print("Invalid student name format.")
+        except ValueError:
+            raise InvalidNameLengthException("Invalid student name format.")
 
-    def remove_student(self, student_name: str):
+        if student_name in self.enrollment_students:
+            raise AlreadyExistException("Student already exists")
+
+        self.enrollment_students.append(student_name)
+
+    def remove_student(self, student_name: str) -> bool:
         try:
             first_name, last_name = student_name.split()
             self.enrollment_students.remove(student_name)
+            return True
         except InvalidNameLengthException:
             print("Invalid student name format.")
 
