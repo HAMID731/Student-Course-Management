@@ -77,22 +77,20 @@ class Validator:
 
 
    @staticmethod
-   def email_exists(email):
+   def register_email(email):
         if not os.path.exists("email.txt"):
-            raise InvalidEmailPatternException("Email does not exist.")
+            raise InvalidEmailPatternException("Email file does not exist.")
         try:
-            with open("email.txt", 'w') as file:
-                for line in file:
-                    if line.strip() == email:
-                        return True
-        except FileNotFoundError:
-            return False
+            with open("email.txt", 'a') as file:
+               file.write(email)
+        except FileNotFoundError as e:
+            return e
 
    @staticmethod
-   def register_email(email_input: str):
+   def email_exists(email: str):
        try:
-           with open("email.txt", 'a') as file:
-               file.write(email_input + "\n")
+           with open("email.txt", 'r') as file:
+               file.read(email)
        except FileExistsError:
            return False
 
