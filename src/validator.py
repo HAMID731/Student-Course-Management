@@ -1,3 +1,4 @@
+import os
 import re
 
 from exceptions.exception import *
@@ -26,14 +27,14 @@ class Validator:
        return True
 
    @staticmethod
-   def validate_email(email: str) -> bool:
-       if not email:
+   def validate_email(email_input: str) -> bool:
+       if not email_input:
            raise NullException("Email field is required")
 
-       if not isinstance(email, str):
+       if not isinstance(email_input, str):
            raise InvalidEmailPatternException("Email must be a string")
 
-       if not email.strip(" "):
+       if not email_input.strip(" "):
            raise InvalidEmailPatternException("Email should not be spaced")
 
        email_pattern = r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.(com|africa|org|ng|yahoo)$'
@@ -41,7 +42,7 @@ class Validator:
        if email_pattern.endswith(".") or email_pattern.startswith("."):
            raise InvalidEmailPatternException("Email should not end with a period")
 
-       if not re.match(email_pattern, email):
+       if not re.match(email_pattern, email_input):
            raise InvalidEmailPatternException("Invalid email address.")
 
        return True
@@ -60,7 +61,7 @@ class Validator:
    def validate_course_code(course_code: str) -> bool:
        if not course_code:
            raise NullException("Course Code field is required")
-       if len(course_code) < 3 or len(course_code) > 7 or not course_code.strip(" "):
+       if len(course_code) < 5 or len(course_code) > 7 or not course_code.strip(" "):
            raise InvalidCourseCodeException("Course Code should not be spaced.")
        if not course_code.isalnum():
            raise InvalidCourseCodeException("Course Code should both be alphabets and numbers.")
@@ -73,5 +74,32 @@ class Validator:
        if len(course_title) < 3:
            raise InvalidCourseTitleException("Course Title should not be spaced.")
        return True
+
+
+   @staticmethod
+   def email_exists(email):
+        if not os.path.exists("email.txt"):
+            raise InvalidEmailPatternException("Email does not exist.")
+        try:
+            with open("email.txt", 'w') as file:
+                for line in file:
+                    if line.strip() == email:
+                        return True
+        except FileNotFoundError:
+            return False
+
+   @staticmethod
+   def register_email(email_input: str):
+       try:
+           with open("email.txt", 'a') as file:
+               file.write(email_input + "\n")
+       except FileExistsError:
+           return False
+
+
+
+
+
+
 
 

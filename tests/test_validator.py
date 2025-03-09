@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exceptions.exception import InvalidNameLengthException, NullException, InvalidEmailPatternException, \
@@ -9,6 +10,8 @@ class MyValidatorTestCase(unittest.TestCase):
 
     def setUp(self):
         self.validator = Validator()
+        if os.path.exists('email.txt'):
+            os.remove('email.txt')
 
     def test_both_first_name_and_last_name_is_only_series_of_letters(self):
         first_name = "Favour"
@@ -76,10 +79,20 @@ class MyValidatorTestCase(unittest.TestCase):
     def test_that_course_code_is_not_valid(self):
         with self.assertRaises(InvalidCourseCodeException):
             self.validator.validate_course_code(",math123")
+        with self.assertRaises(InvalidCourseCodeException):
+            self.validator.validate_course_code("math 123")
 
     def test_that_course_code_is_valid(self):
         course = self.validator.validate_course_code("Math123")
         self.assertTrue(course)
+
+    def test_register_email_duplicate(self):
+        email = "test@example.com"
+        Validator.register_email(email)
+        self.assertFalse(self.validator.register_email(email))  
+        with open("email.txt", 'r') as file:
+            emails = [line.strip() for line in file]
+            self.assertEqual(emails.count(email), 1)
 
 
 
