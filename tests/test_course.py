@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exceptions.exception import InvalidNameException, InvalidNameLengthException
@@ -30,9 +31,10 @@ class MyTestCase(unittest.TestCase):
         with self.assertRaises(InvalidNameLengthException):
             self.course.add_student("Ayomide")
 
-
-
-
+    def test_save_course(self):
+        self.course.save_course("Math103", "Mathematics")
+        read = self.course.load_course()
+        self.assertEqual(read, "Math103, Mathematics")
 
 if __name__ == '__main__':
     unittest.main()

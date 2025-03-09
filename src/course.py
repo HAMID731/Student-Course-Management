@@ -1,5 +1,6 @@
-from exceptions.exception import InvalidNameLengthException, AlreadyExistException
+from exceptions.exception import *
 from src.validator import Validator
+import os
 
 
 class Course:
@@ -50,4 +51,16 @@ class Course:
 
     def get_number_of_enrolled_students(self):
         return len(self.enrollment_students)
+
+    @staticmethod
+    def save_course(course_code, course_title):
+        if not os.path.exists("course.txt"):
+            with open("course.txt", "a") as file:
+               file.write(f"{course_code}, {course_title}")
+
+    @staticmethod
+    def load_course():
+        if os.path.exists("course.txt"):
+            with open("course.txt", "r") as file:
+                 return file.read()
 
