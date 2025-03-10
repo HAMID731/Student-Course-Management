@@ -34,18 +34,19 @@ class Validator:
        if not isinstance(email_input, str):
            raise InvalidEmailPatternException("Email must be a string")
 
-       if not email_input.strip(" "):
-           raise InvalidEmailPatternException("Email should not be spaced")
+       if not email_input.strip():
+           raise InvalidEmailPatternException("Email should not be only spaces")
 
-       email_pattern = r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.(com|africa|org|ng|yahoo)$'
+       email_pattern = r'^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.(com|africa|org|ng|yahoo)$'
 
-       if email_pattern.endswith(".") or email_pattern.startswith("."):
+       if email_input.endswith(".") or email_input.startswith("."):
            raise InvalidEmailPatternException("Email should not end with a period")
 
        if not re.match(email_pattern, email_input):
            raise InvalidEmailPatternException("Invalid email address.")
 
        return True
+
 
    @staticmethod
    def validate_password(password: str) -> bool:
@@ -72,32 +73,43 @@ class Validator:
        if not course_title:
            raise NullException("Course Title field is required")
        if len(course_title) < 3:
-           raise InvalidCourseTitleException("Course Title should not be spaced.")
+           raise InvalidCourseTitleException("Course Title is invalid.")
        return True
 
-
    @staticmethod
-   def register_email(email):
-        if not os.path.exists("email.txt"):
-            raise InvalidEmailPatternException("Email file does not exist.")
-        try:
-            with open("email.txt", 'a') as file:
-               file.write(email)
-        except FileNotFoundError as e:
-            return e
+   def register_email(email: str, file_path: str) -> bool:
 
-   @staticmethod
-   def email_exists(email: str):
+       if Validator.email_exists(email, file_path):
+           raise EmailAlreadyExistException("Email already exists.")
+
        try:
-           with open("email.txt", 'r') as file:
-               file.read(email)
-       except FileExistsError:
+           with open(file_path, 'a') as file:
+               file.write(f"{email}\n")
+           return True
+       except Exception as e:
+           raise e
+
+   @staticmethod
+   def email_exists(email: str, file_path: str) -> bool:
+       try:
+           Validator.validate_email(email)
+
+           if not os.path.exists(file_path):
+               return False
+
+           with open(file_path, 'r') as file:
+               emails = file.read().splitlines()
+               return email in emails
+
+       except InvalidEmailPatternException:
            return False
 
+       except NullException:
+           return False
+
+       # except Exception as e:
+       #     raise e
 
 
-
-
-
-
+# VALIDATE_EMAIL -> EMAIL_EXISTS -> REGISTER_EMAIL
 
