@@ -5,7 +5,6 @@ from exceptions.exception import *
 
 
 class Validator:
-
    @staticmethod
    def validate_first_name(first_name) -> bool:
        if not first_name:
