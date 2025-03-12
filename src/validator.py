@@ -106,9 +106,3 @@ class Validator:
        except NullException:
            return False
 
-       # except Exception as e:
-       #     raise e
-
-
-# VALIDATE_EMAIL -> EMAIL_EXISTS -> REGISTER_EMAIL
-

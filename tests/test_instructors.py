@@ -18,32 +18,32 @@ class TestInstructor(unittest.TestCase):
             os.remove("instructors.txt")
 
     def test_register_success(self):
-        self.assertTrue(self.instructor.register("John", "Doe", "john@example.com", "securepass"))
+        self.assertTrue(self.instructor.register("Abisoye", "Abimbola", "Abisoye@example.com", "password123"))
         self.assertEqual(len(Instructor.list_of_instructors), 1)
 
     def test_register_duplicate_email(self):
-        self.instructor.register("John", "Doe", "john@example.com", "securepass")
+        self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
         with self.assertRaises(ValueError):
-            self.instructor.register("Jane", "Doe", "john@example.com", "anotherpass")
+            self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
 
     def test_register_student_email_conflict(self):
-        self.student.register("Student", "One", "student@example.com", "studentpass")
+        self.student.register("Favor", "Igwe", "Igwe@example.com", "password123")
         with self.assertRaises(ValueError):
-            self.instructor.register("Instructor", "One", "student@example.com", "instructorpass")
+            self.instructor.register("Abimbola", "Abimbola", "Abimbola@example.com", "password")
 
     def test_login_success(self):
-        self.instructor.register("John", "Doe", "john@example.com", "securepass")
-        self.assertTrue(self.instructor.login("john@example.com", "securepass"))
+        self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
+        self.assertTrue(self.instructor.login("Abari@example.com", "password123"))
 
     def test_login_failure_email(self):
-        self.instructor.register("John", "Doe", "john@example.com", "securepass")
+        self.instructor.register("Abari", "Hamid", "Abari@example.com", "pass")
         with self.assertRaises(VerificationFailedException):
-            self.instructor.login("wrong@example.com", "securepass")
+            self.instructor.login("wrong@example.com", "pass")
 
     def test_login_failure_password(self):
-        self.instructor.register("John", "Doe", "john@example.com", "securepass")
+        self.instructor.register("Favor", "Igwe", "Igwe@example.com", "securepass")
         with self.assertRaises(VerificationFailedException):
-            self.instructor.login("john@example.com", "wrongpass")
+            self.instructor.login("Igwe@example.com", "wrongpass")
 
     def test_add_course(self):
         course = Course("CS101", "Intro to CS")
@@ -52,8 +52,8 @@ class TestInstructor(unittest.TestCase):
 
     def test_view_enrolled_students(self):
         course = Course("CS101", "Intro to CS")
-        student1 = Student("Alice")
-        student2 = Student("Bob")
+        student1 = Student("Favor")
+        student2 = Student("Abari")
         course.enrollment_students.append(student1)
         course.enrollment_students.append(student2)
         self.instructor.add_course(course)

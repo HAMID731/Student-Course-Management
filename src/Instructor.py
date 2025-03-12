@@ -31,7 +31,8 @@ class Instructor(User):
 
         return True
 
-    def save_to_file(self, first_name, last_name, email, password):
+    @staticmethod
+    def save_to_file(first_name, last_name, email, password):
         try:
             with open("instructors.txt", "a") as file:
                 file.write(f"First Name: {first_name}, Last Name: {last_name}, Email: {email}, Password: {password}\n")
