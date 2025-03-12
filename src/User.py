@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from src.validator import Validator
 
 class User(ABC):
     def __init__(self,first_name,last_name,email, password):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.password = password
+        self.first_name = validator.validate_first_name(first_name)
+        self.last_name = validator.validate_last_name(last_name)
+        self.email = validator.validate_email(email)
+        self.password = validator.validate_password(password)
 
     @abstractmethod
     def register(self, first_name, last_name, email, password):
