@@ -1,9 +1,8 @@
 import unittest
 from src.Instructor import Instructor
-from src.User import User
-from src.validator import Validator
+from src.course import Course
 from exceptions.exception import VerificationFailedException
-from src.Student import Student
+from src.student import Student
 import os
 
 class TestInstructor(unittest.TestCase):
@@ -52,8 +51,8 @@ class TestInstructor(unittest.TestCase):
 
     def test_view_enrolled_students(self):
         course = Course("CS101", "Intro to CS")
-        student1 = Student("Favor")
-        student2 = Student("Abari")
+        student1 = Student("Favor","igwe","favorigwe@gmail.com","password123")
+        student2 = Student("Abari","hamid","Abari@example.com","password")
         course.enrollment_students.append(student1)
         course.enrollment_students.append(student2)
         self.instructor.add_course(course)
