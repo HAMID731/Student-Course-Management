@@ -1,4 +1,5 @@
-import email
+from validator import Validator
+from exceptions.exception import *
 import os
 
 from src.User import User
@@ -63,10 +64,6 @@ def save_files(first_name,last_name,email):
 def load_files(first_name,last_name,email):
     with open("student_files.txt", "r") as file:
         file.readline(f"{first_name} {last_name}:{email}\n")
-
-
-
-ok thanks.... no probl
 
 
 

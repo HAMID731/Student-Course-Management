@@ -1,6 +1,7 @@
 from src.User import User
 from src.validator import Validator
 class Instructor(User):
+
     def __init__(self, first_name, last_name, email, password):
         super().__init__(first_name, last_name, email, password)
         self.list_of_instructors = []
