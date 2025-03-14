@@ -2,7 +2,6 @@ import sys
 
 from exceptions.exception import *
 
-
 class Main:
 
     def main_menu(self):
