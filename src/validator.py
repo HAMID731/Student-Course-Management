@@ -10,7 +10,7 @@ class Validator:
    def validate_first_name(first_name) -> bool:
        if not first_name:
            raise NullException("First Name field is required")
-       if not first_name.strip(" "):
+       if not first_name.strip():
            raise InvalidNameLengthException("No spaces allowed amongst the letters.")
        if len(first_name) < 3 or not first_name.isalpha():
            raise InvalidNameLengthException("Last Name must be at least 3 characters long and contain only letters.")
@@ -20,7 +20,7 @@ class Validator:
    def validate_last_name(last_name: str) -> bool:
        if not last_name:
            raise NullException("Last Name field is required")
-       if not last_name.strip(" "):
+       if not last_name.strip():
            raise InvalidNameLengthException("No spaces allowed amongst the letters.")
        if len(last_name) < 3 or not last_name.isalpha():
            raise InvalidNameLengthException("Last Name must be at least 3 characters long and contain only letters.")
@@ -52,7 +52,7 @@ class Validator:
    def validate_password(password: str) -> bool:
        if not password:
            raise NullException("Password field is required")
-       if not password.strip(" "):
+       if not password.strip():
            raise InvalidPasswordLengthException("Invalid.")
        if len(password) < 5:
            raise InvalidPasswordLengthException("Password must be at least 5 characters long and contain only letters.")
