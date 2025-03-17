@@ -46,15 +46,26 @@ class Validator:
 
        return True
 
-
    @staticmethod
    def validate_password(password: str) -> bool:
        if not password:
            raise NullException("Password field is required")
-       if not password.strip(" "):
-           raise InvalidPasswordLengthException("Invalid.")
-       if len(password) < 5:
-           raise InvalidPasswordLengthException("Password must be at least 5 characters long and contain only letters.")
+
+       if len(password) < 8:
+           raise InvalidPasswordLengthException("Password must be at least 8 characters long.")
+
+       if not re.search(r"[A-Z]", password):
+           raise InvalidPasswordLengthException("Password must contain at least one uppercase letter.")
+
+       if not re.search(r"[a-z]", password):
+           raise InvalidPasswordLengthException("Password must contain at least one lowercase letter.")
+
+       if not re.search(r"[0-9]", password):
+           raise InvalidPasswordLengthException("Password must contain at least one number.")
+
+       if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+           raise InvalidPasswordLengthException("Password must contain at least one symbol.")
+
        return True
 
    @staticmethod

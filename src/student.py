@@ -1,9 +1,9 @@
 from validator import Validator
 from exceptions.exception import *
 import os
-
 from src.User import User
 class Student(User):
+
 
     def __init__(self, first_name, last_name, email, password):
         super().__init__(first_name, last_name, email, password)
@@ -20,6 +20,7 @@ class Student(User):
         if email in Validator.email_exists:
             raise EmailAlreadyExistException("This email is already registered")
         self.list_of_students.append(Student(first_name, last_name, email, password))
+        return True
 
     def login(self, email: str, password: str) -> bool:
         for  users in self.registered_users:
@@ -38,6 +39,7 @@ class Student(User):
 
     def find_course_by_code(self, course_code: str):
         pass
+
     def view_grades(self, grades):
         if self.enrolled_courses:
             for course in self.enrolled_courses:
@@ -52,18 +54,27 @@ class Student(User):
     def enroll_course(self, param):
         pass
 
-    def view_enrolled_courses(self, enrolled_courses):
-        return len(self.enrolled_courses.get([]))
-        print(f"Courses enrolled by {self.first_name} {self.last_name}:{', '.join(self.enrolled_courses)}")
+    def view_enrolled_courses(self):  # remove the parameter
+        if self.enrolled_courses:  # check if there are courses in the dictionary
+            print(
+                f"Courses enrolled by {self.first_name} {self.last_name}: {', '.join(self.enrolled_courses.keys())}")  # print the keys
+            return len(self.enrolled_courses)
+        else:
+            print(
+                f"{self.first_name} {self.last_name} is not enrolled in any courses.")  # if there are no courses print this
+            return 0
 
-def save_files(first_name,last_name,email):
-    if not os.path.exists("student_files.txt"):
-        return False
-    with open("student_files.txt", "a") as file:
-        file.write(f"{first_name} {last_name}:{email}\n")
-def load_files(first_name,last_name,email):
-    with open("student_files.txt", "r") as file:
-        file.readline(f"{first_name} {last_name}:{email}\n")
+    @staticmethod
+    def save_files(first_name,last_name,email):
+        if not os.path.exists("student.txt"):
+            return False
+        with open("student.txt", "a") as file:
+            file.write(f"{first_name} {last_name}:{email}\n")
+
+    @staticmethod
+    def load_files(first_name,last_name,email):
+        with open("student.txt", "r") as file:
+            file.readline(f"{first_name} {last_name}:{email}\n")
 
 
 

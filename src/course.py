@@ -1,66 +1,38 @@
+import os
 from exceptions.exception import *
 from src.validator import Validator
-import os
-
 
 class Course:
-
     def __init__(self, course_code, course_title):
-        Validator.validate_course_code(course_code)
-        Validator.validate_course_title(course_title)
+        if not Validator.validate_course_code(course_code):
+            raise InvalidCourseCodeException("Invalid course code format.")
+        if not Validator.validate_course_title(course_title):
+            raise InvalidCourseTitleException("Invalid course title format.")
         self.course_code = course_code
         self.course_title = course_title
-        self.courses = []
-        self.enrollment_students = []
+        self.enrolled_students = []
 
-    @property
-    def course_code(self):
-        return self.__course_code
+    def add_student(self, student):
+        self.enrolled_students.append(student)
 
-    @course_code.setter
-    def course_code(self, course_code):
-        self.__course_code = course_code
+    def remove_student(self, student):
+        if student in self.enrolled_students:
+            self.enrolled_students.remove(student)
 
-    @property
-    def course_title(self):
-        return self.__title
+    def number_of_enrolled_students(self):
+        return len(self.enrolled_students)
 
-    @course_title.setter
-    def course_title(self, course_title):
-        self.__title = course_title
-
-
-    def add_student(self, student_name: str):
-        try:
-            first_name, last_name = student_name.split()
-        except ValueError:
-            raise InvalidNameLengthException("Invalid student name format.")
-
-        if student_name in self.enrollment_students:
-            raise AlreadyExistException("Student already exists")
-
-        self.enrollment_students.append(student_name)
-
-    def remove_student(self, student_name: str) -> bool:
-        try:
-            first_name, last_name = student_name.split()
-            self.enrollment_students.remove(student_name)
-            return True
-        except InvalidNameLengthException:
-            print("Invalid student name format.")
-
-    def get_number_of_enrolled_students(self):
-        return len(self.enrollment_students)
+    def save_to_file(self):
+        with open("courses.txt", "a") as file:
+            file.write(f"{self.course_code},{self.course_title}\n")
 
     @staticmethod
-    def save_course(course_code, course_title):
-        if not os.path.exists("course.txt"):
-            with open("course.txt", "a") as file:
-               file.write(f"{course_code}, {course_title}")
-
-    @staticmethod
-    def load_course():
-        if os.path.exists("course.txt"):
-            with open("course.txt", "r") as file:
-                 return file.read()
-
+    def load_from_file():
+        courses = []
+        if os.path.exists("courses.txt"):
+            with open("courses.txt", "r") as file:
+                for line in file:
+                    course_code, course_title = line.strip().split(",")
+                    course = Course(course_code, course_title)
+                    courses.append(course)
+        return courses

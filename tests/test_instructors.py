@@ -1,62 +1,63 @@
 import unittest
 from src.Instructor import Instructor
-from src.course import Course
-from exceptions.exception import VerificationFailedException
 from src.student import Student
-import os
+from src.course import Course
+from exceptions.exception import InvalidCourseCodeException, InvalidCourseTitleException
 
 class TestInstructor(unittest.TestCase):
 
     def setUp(self):
-        self.instructor = Instructor("Test", "Instructor", "test@instructor.com", "password123")
-        self.student = Student("Test", "Student", "test@student.com", "password123")
-        Instructor.instructor_emails = []
-        Student.student_emails = []
-        Instructor.list_of_instructors = []
-        if os.path.exists("instructors.txt"):
-            os.remove("instructors.txt")
+        self.instructor = Instructor("Ms.", "Frizzle", "frizzle@example.com", "magicSchoolBus")
+        self.student1 = Student('Abari', 'Hamid', 'Abariwonda4@gmail.com', 'hamid123')
+        self.student2 = Student('favour', 'igwe', 'favor123@gmail.com', 'favour123')
+        self.student3 = Student('abimbola', 'abisoye', 'abimbola13@gmail.com', 'abimbola13')
+        self.course = Course("BUS101", "Magic School Bus Rides")
 
-    def test_register_success(self):
-        self.assertTrue(self.instructor.register("Abisoye", "Abimbola", "Abisoye@example.com", "password123"))
-        self.assertEqual(len(Instructor.list_of_instructors), 1)
-
-    def test_register_duplicate_email(self):
-        self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
-        with self.assertRaises(ValueError):
-            self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
-
-    def test_register_student_email_conflict(self):
-        self.student.register("Favor", "Igwe", "Igwe@example.com", "password123")
-        with self.assertRaises(ValueError):
-            self.instructor.register("Abimbola", "Abimbola", "Abimbola@example.com", "password")
-
-    def test_login_success(self):
-        self.instructor.register("Abari", "Hamid", "Abari@example.com", "password123")
-        self.assertTrue(self.instructor.login("Abari@example.com", "password123"))
-
-    def test_login_failure_email(self):
-        self.instructor.register("Abari", "Hamid", "Abari@example.com", "pass")
-        with self.assertRaises(VerificationFailedException):
-            self.instructor.login("wrong@example.com", "pass")
-
-    def test_login_failure_password(self):
-        self.instructor.register("Favor", "Igwe", "Igwe@example.com", "securepass")
-        with self.assertRaises(VerificationFailedException):
-            self.instructor.login("Igwe@example.com", "wrongpass")
-
-    def test_add_course(self):
-        course = Course("CS101", "Intro to CS")
-        self.instructor.add_course(course)
+    def test_create_course(self):
+        new_course = self.instructor.create_course("SCI101", "All About Science")
         self.assertEqual(len(self.instructor.courses), 1)
 
-    def test_view_enrolled_students(self):
-        course = Course("CS101", "Intro to CS")
-        student1 = Student("Favor","igwe","favorigwe@gmail.com","password123")
-        student2 = Student("Abari","hamid","Abari@example.com","password")
-        course.enrollment_students.append(student1)
-        course.enrollment_students.append(student2)
-        self.instructor.add_course(course)
-        self.instructor.view_enrolled_students("CS101")
+    def test_add_remove_student(self):
+        self.course.add_student(self.student1)
+        self.assertEqual(len(self.course.enrolled_students), 1)
+        self.instructor.remove_student_from_course(self.student1, self.course)
+        self.assertEqual(len(self.course.enrolled_students), 0)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_assign_grade(self):
+        result = self.instructor.assign_grade(self.student1, 90, 85, 95)
+        self.assertTrue(result)
+
+    def test_login_success(self):
+        self.assertTrue(self.instructor.login("frizzle@example.com", "magicSchoolBus"))
+
+    def test_login_fail_email(self):
+        self.assertFalse(self.instructor.login("wrong@example.com", "magicSchoolBus"))
+
+    def test_login_fail_password(self):
+        self.assertFalse(self.instructor.login("frizzle@example.com", "wrongPassword"))
+
+    def test_view_enrolled_students(self):
+        self.course.add_student(self.student1)
+        enrolled_students = self.instructor.view_enrolled_students(self.course)
+        self.assertEqual(len(enrolled_students), 1)
+
+    def test_number_of_enrolled_students(self):
+        self.course.add_student(self.student2)
+        self.assertEqual(self.instructor.number_of_enrolled_students(self.course), 1)
+
+    def test_remove_nonexistent_student(self):
+        result = self.instructor.remove_student_from_course(self.student3, self.course)
+        self.assertFalse(result)
+
+    def test_remove_student_from_nonexistent_course(self):
+        new_course = Course("ART101", "Drawing")
+        result = self.instructor.remove_student_from_course(self.student1, new_course)
+        self.assertFalse(result)
+
+    def test_create_course_invalid_code(self):
+        with self.assertRaises(InvalidCourseCodeException):
+            self.instructor.create_course("INVLD", "Invalid Code Course")
+
+    def test_create_course_invalid_title(self):
+        with self.assertRaises(InvalidCourseTitleException):
+            self.instructor.create_course("ART101", "")
