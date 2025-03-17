@@ -4,13 +4,27 @@ from src.validator import Validator
 
 class Course:
     def __init__(self, course_code, course_title):
-        if not Validator.validate_course_code(course_code):
-            raise InvalidCourseCodeException("Invalid course code format.")
         if not Validator.validate_course_title(course_title):
             raise InvalidCourseTitleException("Invalid course title format.")
         self.course_code = course_code
         self.course_title = course_title
         self.enrolled_students = []
+
+    @property
+    def course_code(self):
+        return self.__course_code
+
+    @course_code.setter
+    def course_code(self, course_code):
+        self.__course_code = Validator.validate_course_code(course_code)
+
+    @property
+    def course_title(self):
+        return self.__course_title
+
+    @course_title.setter
+    def course_title(self, course_title):
+        self.__course_title = Validator.validate_course_title(course_title)
 
     def add_student(self, student):
         self.enrolled_students.append(student)

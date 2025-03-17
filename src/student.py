@@ -1,4 +1,4 @@
-from validator import Validator
+from .validator import Validator
 from exceptions.exception import *
 import os
 from src.User import User
